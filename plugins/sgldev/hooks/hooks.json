@@ -12,6 +12,29 @@
         ]
       }
     ],
+    "SubagentStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/inject-expertise.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Review what this subagent did. Respond with JSON.\n\nIf the subagent performed meaningful work (code review, implementation, debugging, architectural analysis) and did NOT update its mental model file in .expertise/models/, respond:\n{\"ok\": false, \"reason\": \"You performed meaningful work but did not update your mental model file in .expertise/models/. Please read your model file, update it with patterns, observations, or learnings from this session, then you may stop.\"}\n\nIf no meaningful work was performed, or the mental model was already updated, respond:\n{\"ok\": true}"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
@@ -24,13 +47,13 @@
         ]
       }
     ],
-    "SubagentStart": [
+    "PreCompact": [
       {
         "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/load-expertise.sh",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/preserve-expertise.sh",
             "timeout": 10
           }
         ]

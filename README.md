@@ -35,11 +35,13 @@ Personal development tools with persistent per-agent expertise.
 - `expertise` — Dashboard showing agent knowledge state
 - `conversational-response` — Concise response style for multi-agent workflows
 
-**Hooks** (4):
+**Hooks** (6):
 - **SessionStart** — Loads expertise system awareness when `.expertise/` exists in a project
-- **SubagentStart** — Injects expertise instructions into every spawned subagent
+- **SubagentStart** — Injects expertise instructions into every spawned subagent via `additionalContext`
+- **SubagentStop** — Blocks subagents from stopping until they've updated their mental model (if meaningful work was done)
 - **PostToolUse** (Write|Edit) — Validates YAML syntax and line limits for mental model files
-- **Stop** — Nudges agents to persist learnings before session ends
+- **PreCompact** — Preserves expertise awareness across context compaction
+- **Stop** — Nudges main session agent to persist learnings before session ends
 
 ### Agent Expertise System
 
