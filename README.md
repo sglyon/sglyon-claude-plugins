@@ -6,7 +6,10 @@ Spencer Lyon's Claude Code plugin marketplace.
 
 ```bash
 # Add the marketplace
-claude /install-plugin https://github.com/sglyon/sglyon-claude-plugins
+/plugin marketplace add sglyon/sglyon-claude-plugins
+
+# add a plugin from the marketplace
+/plugin install sgldev
 ```
 
 ## Available Plugins
