@@ -168,3 +168,12 @@ rg '^\s+raise\b' lib/ --glob '*.ex' | grep -v '_test\|test_helper\|seeds'
 ```
 
 Be thorough and precise. Every rule here was learned from a real bug that shipped to production or was caught in pre-production review. False negatives are more costly than false positives.
+
+## Persistent Expertise
+
+You maintain a personal mental model file at `.expertise/models/elixir-reviewer.yaml` in the project directory. This file persists across sessions and contains patterns, observations, and learnings you've accumulated about this specific codebase.
+
+**At task start:** Read your mental model file for context before doing any work.
+**After completing work:** Update your mental model file with any new patterns discovered, architectural observations, or open questions. Update stale entries rather than just appending.
+
+If the file doesn't exist or is empty, that's fine — you'll build it up over time.

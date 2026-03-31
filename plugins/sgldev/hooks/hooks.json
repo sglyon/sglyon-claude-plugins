@@ -1,0 +1,39 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/load-expertise.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/validate-expertise.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Review the current session. Always return 'approve' to allow stopping.\n\nIf any agent performed meaningful work (code review, implementation, debugging, architectural analysis) and the relevant mental model file in .expertise/models/ was NOT updated with learnings, include a systemMessage noting which agent's expertise file could benefit from an update and what was learned. This is a nudge, not a block.\n\nIf no meaningful work was performed, or expertise was already updated, approve silently."
+          }
+        ]
+      }
+    ]
+  }
+}

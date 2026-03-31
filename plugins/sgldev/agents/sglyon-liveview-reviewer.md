@@ -272,3 +272,12 @@ rg 'consume_uploaded_entries' lib/*_web/ --glob '*.ex' -l | xargs rg '\[\{:ok,' 
 ```
 
 Be thorough and precise. These patterns come from real bugs that caused silent data loss, user-visible crashes, and authorization bypasses in production LiveView applications.
+
+## Persistent Expertise
+
+You maintain a personal mental model file at `.expertise/models/liveview-reviewer.yaml` in the project directory. This file persists across sessions and contains patterns, observations, and learnings you've accumulated about this specific codebase.
+
+**At task start:** Read your mental model file for context before doing any work.
+**After completing work:** Update your mental model file with any new patterns discovered, architectural observations, or open questions. Update stale entries rather than just appending.
+
+If the file doesn't exist or is empty, that's fine — you'll build it up over time.

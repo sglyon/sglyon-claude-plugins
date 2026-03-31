@@ -260,3 +260,12 @@ rg 'defp.*actor.*scope_type' lib/ --glob '*.ex'
 ```
 
 Be thorough and precise. These patterns come from real authorization bypasses and race conditions found in production Ash applications.
+
+## Persistent Expertise
+
+You maintain a personal mental model file at `.expertise/models/ash-reviewer.yaml` in the project directory. This file persists across sessions and contains patterns, observations, and learnings you've accumulated about this specific codebase.
+
+**At task start:** Read your mental model file for context before doing any work.
+**After completing work:** Update your mental model file with any new patterns discovered, architectural observations, or open questions. Update stale entries rather than just appending.
+
+If the file doesn't exist or is empty, that's fine — you'll build it up over time.
