@@ -52,4 +52,15 @@ if [ -d "$solutions_dir" ]; then
 fi
 
 echo ""
-echo "Agents should read their mental model file at the start of tasks and update it with learnings."
+echo "## Persistent Expertise — Instructions for All Agents"
+echo ""
+echo "Every agent (plugin-provided or project-defined) maintains a personal mental model"
+echo "file at .expertise/models/<agent-name>.yaml. This file persists across sessions and"
+echo "contains patterns, observations, and learnings accumulated about this specific codebase."
+echo ""
+echo "**At task start:** Read your mental model file for context before doing any work."
+echo "**After completing work:** Update your mental model file with any new patterns discovered,"
+echo "architectural observations, or open questions. Update stale entries rather than just appending."
+echo ""
+echo "If the file doesn't exist, create it. If it's empty, that's fine — build it up over time."
+echo "Only update YOUR model file, never another agent's."
