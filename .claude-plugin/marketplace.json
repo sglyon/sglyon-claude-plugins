@@ -1,0 +1,33 @@
+{
+  "name": "sglyon-claude-plugins",
+  "owner": {
+    "name": "Spencer Lyon",
+    "url": "https://github.com/sglyon"
+  },
+  "metadata": {
+    "description": "Spencer Lyon's Claude Code plugin marketplace",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "sgldev",
+      "description": "Spencer Lyon's personal development tools. Includes 5 specialized review agents (Elixir, Ash, LiveView, Python, TypeScript) and 5 skills (chartroom, showboat, team-lead, rodney, create-agent-skills).",
+      "version": "1.0.0",
+      "author": {
+        "name": "Spencer Lyon",
+        "url": "https://github.com/sglyon"
+      },
+      "homepage": "https://github.com/sglyon/sglyon-claude-plugins",
+      "tags": [
+        "elixir",
+        "phoenix",
+        "ash-framework",
+        "python",
+        "typescript",
+        "code-review",
+        "browser-automation"
+      ],
+      "source": "./plugins/sgldev"
+    }
+  ]
+}

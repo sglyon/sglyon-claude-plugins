@@ -1,0 +1,21 @@
+{
+  "name": "sgldev",
+  "version": "1.0.0",
+  "description": "Spencer Lyon's personal development tools. Includes 5 specialized review agents (Elixir, Ash, LiveView, Python, TypeScript) and 5 skills (chartroom, showboat, team-lead, rodney, create-agent-skills).",
+  "author": {
+    "name": "Spencer Lyon",
+    "url": "https://github.com/sglyon"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/sglyon/sglyon-claude-plugins",
+  "keywords": [
+    "elixir",
+    "phoenix",
+    "ash-framework",
+    "python",
+    "typescript",
+    "code-review",
+    "browser-automation",
+    "demo-documents"
+  ]
+}
