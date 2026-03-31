@@ -35,8 +35,9 @@ Personal development tools with persistent per-agent expertise.
 - `expertise` — Dashboard showing agent knowledge state
 - `conversational-response` — Concise response style for multi-agent workflows
 
-**Hooks** (3):
+**Hooks** (4):
 - **SessionStart** — Loads expertise system awareness when `.expertise/` exists in a project
+- **SubagentStart** — Injects expertise instructions into every spawned subagent
 - **PostToolUse** (Write|Edit) — Validates YAML syntax and line limits for mental model files
 - **Stop** — Nudges agents to persist learnings before session ends
 
@@ -56,14 +57,16 @@ This creates `.expertise/` with empty model files for each agent. Models are git
 
 #### How It Works
 
-The expertise system delivers instructions through two channels:
+The expertise system delivers instructions automatically via hooks — no manual setup in agent files needed:
 
-- **SessionStart hook** — Fires when a Claude Code session begins. Outputs the full expertise lifecycle instructions to the main session agent. This covers any agent used directly in conversation (including project-defined agents).
-- **Agent system prompts** — Each plugin agent (the 5 reviewers) has a "Persistent Expertise" section baked into its `.md` file. This covers the subagent case (e.g., when team-lead spawns a reviewer), since there is no `SubagentStart` hook in Claude Code.
+- **SessionStart hook** — Fires when a Claude Code session begins. Injects expertise lifecycle instructions into the main session agent.
+- **SubagentStart hook** — Fires when any subagent is spawned (e.g., team-lead spawning a reviewer). Injects the same expertise instructions into the subagent's context.
+
+Both hooks run the same script, so every agent — plugin-provided or project-defined, main session or subagent — gets the full instructions automatically.
 
 #### Using Expertise with Custom Project Agents
 
-Any project can define its own agents in `.claude/agents/` and have them participate in the expertise system:
+Any project can define its own agents in `.claude/agents/` and have them participate in the expertise system. No changes to the agent's `.md` file are needed — the SubagentStart hook handles instruction injection automatically.
 
 1. **Add your agent to `.expertise/config.yaml`:**
 
@@ -84,21 +87,4 @@ agents:
 bash $CLAUDE_PLUGIN_ROOT/scripts/init-expertise.sh
 ```
 
-3. **Add the Persistent Expertise section** to your agent's `.md` file (required for subagents, since there is no `SubagentStart` hook):
-
-```markdown
-## Persistent Expertise
-
-You maintain a personal mental model file at `.expertise/models/my-custom-agent.yaml`
-in the project directory. This file persists across sessions and contains patterns,
-observations, and learnings you've accumulated about this specific codebase.
-
-**At task start:** Read your mental model file for context before doing any work.
-**After completing work:** Update your mental model file with any new patterns
-discovered, architectural observations, or open questions. Update stale entries
-rather than just appending.
-
-If the file doesn't exist or is empty, that's fine — you'll build it up over time.
-```
-
-If your custom agent is only used directly in conversation (not as a subagent), the SessionStart hook provides the instructions automatically and step 3 is optional.
+That's it. The hooks handle the rest.
