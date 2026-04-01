@@ -4,6 +4,8 @@ import os
 import sys
 from pathlib import Path
 
+import yaml
+
 
 def get_project_dir() -> Path:
     return Path(os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd()))
@@ -21,21 +23,9 @@ def get_config(expertise_dir: Path) -> dict:
     if not config_file.exists():
         return defaults
 
-    try:
-        import yaml
-        with open(config_file) as f:
-            data = yaml.safe_load(f) or {}
-        return {**defaults, **data}
-    except ImportError:
-        # No PyYAML — parse max_lines with simple string matching
-        config = dict(defaults)
-        for line in config_file.read_text().splitlines():
-            if line.startswith("max_lines:"):
-                try:
-                    config["max_lines"] = int(line.split(":")[1].strip())
-                except ValueError:
-                    pass
-        return config
+    with open(config_file) as f:
+        data = yaml.safe_load(f) or {}
+    return {**defaults, **data}
 
 
 def list_models(expertise_dir: Path) -> list[dict]:

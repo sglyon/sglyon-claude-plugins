@@ -49,6 +49,8 @@ Each agent maintains a personal mental model file (`.expertise/models/<agent>.ya
 
 Designed to complement the [compound-engineering](https://github.com/EveryInc/compound-engineering-plugin) plugin — sgldev owns per-agent expertise while compound-engineering owns institutional knowledge (`docs/solutions/`).
 
+**Requirements:** `pip install pyyaml` (used by hook scripts for YAML validation)
+
 **Setup in a project:**
 
 ```bash

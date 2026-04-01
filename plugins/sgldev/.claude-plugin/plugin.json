@@ -1,6 +1,6 @@
 {
   "name": "sgldev",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Spencer Lyon's personal development tools. Includes 5 specialized review agents (Elixir, Ash, LiveView, Python, TypeScript) with persistent per-agent expertise, and 8 skills (chartroom, showboat, team-lead, rodney, create-agent-skills, mental-model, expertise, conversational-response).",
   "author": {
     "name": "Spencer Lyon",

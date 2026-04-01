@@ -5,6 +5,8 @@ import json
 import sys
 from pathlib import Path
 
+import yaml
+
 sys.path.insert(0, str(Path(__file__).parent))
 from expertise import get_expertise_dir, get_config
 
@@ -30,18 +32,8 @@ def main():
 
     # Validate YAML syntax
     try:
-        import yaml
         with open(path) as f:
             yaml.safe_load(f)
-    except ImportError:
-        # No PyYAML — basic check for tabs
-        content = path.read_text()
-        for i, line in enumerate(content.splitlines(), 1):
-            if line.startswith("\t"):
-                print(f"YAML validation failed for {path.name}: "
-                      f"tab indentation on line {i}. Use spaces instead.", file=sys.stderr)
-                print(f"\nFix the YAML syntax in {path} before continuing.", file=sys.stderr)
-                sys.exit(2)
     except yaml.YAMLError as e:
         print(f"YAML validation failed for {path.name}: {e}", file=sys.stderr)
         print(f"\nFix the YAML syntax in {path} before continuing.", file=sys.stderr)
