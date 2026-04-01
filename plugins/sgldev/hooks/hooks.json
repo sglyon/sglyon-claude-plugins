@@ -30,7 +30,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Review what this subagent did. Respond with JSON.\n\nIf the subagent performed meaningful work (code review, implementation, debugging, architectural analysis) and did NOT update its mental model file in .expertise/models/, respond:\n{\"ok\": false, \"reason\": \"You performed meaningful work but did not update your mental model file in .expertise/models/. Please read your model file, update it with patterns, observations, or learnings from this session, then you may stop.\"}\n\nIf no meaningful work was performed, or the mental model was already updated, respond:\n{\"ok\": true}"
+            "prompt": "Review what this subagent did. Respond with JSON: {\"ok\": true} or {\"ok\": false, \"reason\": \"...\"}.\n\nIf the subagent performed meaningful work (code review, implementation, debugging, architectural analysis) and did NOT update its mental model file in .expertise/models/, respond:\n{\"ok\": false, \"reason\": \"You performed meaningful work but did not update your mental model file in .expertise/models/. Please read your model file, update it with patterns, observations, or learnings from this session, then you may stop.\"}\n\nIf no meaningful work was performed, or the mental model was already updated, respond:\n{\"ok\": true}"
           }
         ]
       }
@@ -65,7 +65,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Review the current session. Always return 'approve' to allow stopping.\n\nIf any agent performed meaningful work (code review, implementation, debugging, architectural analysis) and the relevant mental model file in .expertise/models/ was NOT updated with learnings, include a systemMessage noting which agent's expertise file could benefit from an update and what was learned. This is a nudge, not a block.\n\nIf no meaningful work was performed, or expertise was already updated, approve silently."
+            "prompt": "Review the current session. Respond with JSON: {\"ok\": true} or {\"ok\": false, \"reason\": \"...\"}.\n\nAlways return {\"ok\": true} to allow stopping.\n\nIf any agent performed meaningful work (code review, implementation, debugging, architectural analysis) and the relevant mental model file in .expertise/models/ was NOT updated with learnings, return {\"ok\": true} but include a note in the reason about which agent's expertise file could benefit from an update. This is a nudge, not a block.\n\nIf no meaningful work was performed, or expertise was already updated, return {\"ok\": true}."
           }
         ]
       }

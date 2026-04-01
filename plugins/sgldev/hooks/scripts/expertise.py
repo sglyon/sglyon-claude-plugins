@@ -1,4 +1,5 @@
 """Shared utilities for agent expertise system hooks."""
+from __future__ import annotations
 
 import os
 import sys
