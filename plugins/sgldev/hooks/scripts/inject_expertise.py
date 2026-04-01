@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.13"
+# dependencies = ["pyyaml"]
+# ///
 """SubagentStart hook: inject expertise instructions into subagent via additionalContext."""
 
 import json

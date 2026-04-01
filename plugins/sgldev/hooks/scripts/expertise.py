@@ -1,3 +1,7 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = ["pyyaml"]
+# ///
 """Shared utilities for agent expertise system hooks."""
 from __future__ import annotations
 

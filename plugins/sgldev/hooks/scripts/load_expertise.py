@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.13"
+# dependencies = ["pyyaml"]
+# ///
 """SessionStart hook: output expertise summary as context for the main session."""
 
 import sys

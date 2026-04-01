@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.13"
+# dependencies = ["pyyaml"]
+# ///
 """PostToolUse hook: validate YAML syntax and line limit for .expertise/models/ writes."""
 
 import json
