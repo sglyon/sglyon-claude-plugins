@@ -58,17 +58,6 @@
           }
         ]
       }
-    ],
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Review the current session. Respond with JSON: {\"ok\": true} or {\"ok\": false, \"reason\": \"...\"}.\n\nAlways return {\"ok\": true} to allow stopping.\n\nIf any agent performed meaningful work (code review, implementation, debugging, architectural analysis) and the relevant mental model file in .expertise/models/ was NOT updated with learnings, return {\"ok\": true} but include a note in the reason about which agent's expertise file could benefit from an update. This is a nudge, not a block.\n\nIf no meaningful work was performed, or expertise was already updated, return {\"ok\": true}."
-          }
-        ]
-      }
     ]
   }
 }
