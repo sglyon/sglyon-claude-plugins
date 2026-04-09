@@ -25,7 +25,7 @@ Personal development tools with persistent per-agent expertise.
 - `sglyon-python-reviewer` — Python
 - `sglyon-typescript-reviewer` — TypeScript
 
-**Skills** (8):
+**Skills** (11):
 - `chartroom` — Chart generation
 - `showboat` — Demo document creation
 - `team-lead` — Team lead workflows
@@ -34,6 +34,9 @@ Personal development tools with persistent per-agent expertise.
 - `mental-model` — Per-agent expertise lifecycle management
 - `expertise` — Dashboard showing agent knowledge state
 - `conversational-response` — Concise response style for multi-agent workflows
+- `deadcode` — Multi-language dead-code detection (Python, JS/TS, Elixir, Go)
+- `jscpd` — Copy/paste duplication detection across 150+ languages
+- `arete-intelligence-sow` — Areté Intelligence branded Statement of Work generator
 
 **Hooks** (5):
 - **SessionStart** — Loads expertise system awareness when `.expertise/` exists in a project
