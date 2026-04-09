@@ -24,7 +24,7 @@ Personal development tools with persistent per-agent expertise.
 - `sglyon-liveview-reviewer` — Phoenix LiveView code review
 - `sglyon-python-reviewer` — Python code review
 - `sglyon-typescript-reviewer` — TypeScript code review
-- `sglyon-code-health-auditor` — Dead code + duplication audits (uses deadcode & jscpd)
+- `sglyon-code-health-auditor` — Dead code + duplication audit (uses `deadcode` and `jscpd`)
 
 **Skills** (11):
 - `chartroom` — Chart generation
