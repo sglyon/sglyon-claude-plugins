@@ -1,7 +1,7 @@
 {
   "name": "sgldev",
   "version": "1.3.0",
-  "description": "Spencer Lyon's personal development tools. Includes 5 specialized review agents (Elixir, Ash, LiveView, Python, TypeScript), 11 skills, and 5 hooks that power a persistent per-agent expertise system — agents accumulate codebase-specific knowledge in .expertise/models/ across sessions via SessionStart, SubagentStart, SubagentStop, PostToolUse, and PreCompact hooks.",
+  "description": "Spencer Lyon's personal development tools. Includes 6 agents (5 language reviewers + code health auditor), 11 skills, and 5 hooks that power a persistent per-agent expertise system — agents accumulate codebase-specific knowledge in .expertise/models/ across sessions via SessionStart, SubagentStart, SubagentStop, PostToolUse, and PreCompact hooks.",
   "author": {
     "name": "Spencer Lyon",
     "url": "https://github.com/sglyon"
@@ -20,6 +20,9 @@
     "expertise",
     "mental-model",
     "hooks",
-    "persistent-knowledge"
+    "persistent-knowledge",
+    "dead-code",
+    "duplication",
+    "code-health"
   ]
 }

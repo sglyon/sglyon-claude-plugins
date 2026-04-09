@@ -18,12 +18,13 @@ Spencer Lyon's Claude Code plugin marketplace.
 
 Personal development tools with persistent per-agent expertise.
 
-**Agents** (5 specialized code reviewers with persistent mental models):
-- `sglyon-ash-reviewer` — Ash Framework
-- `sglyon-elixir-reviewer` — Elixir
-- `sglyon-liveview-reviewer` — Phoenix LiveView
-- `sglyon-python-reviewer` — Python
-- `sglyon-typescript-reviewer` — TypeScript
+**Agents** (6):
+- `sglyon-ash-reviewer` — Ash Framework code review
+- `sglyon-elixir-reviewer` — Elixir code review
+- `sglyon-liveview-reviewer` — Phoenix LiveView code review
+- `sglyon-python-reviewer` — Python code review
+- `sglyon-typescript-reviewer` — TypeScript code review
+- `sglyon-code-health-auditor` — Dead code + duplication audits (uses deadcode & jscpd)
 
 **Skills** (11):
 - `chartroom` — Chart generation
