@@ -18,14 +18,14 @@ command -v deadcode >/dev/null 2>&1 && deadcode --version || echo "NOT INSTALLED
 If `deadcode` itself is not installed, install it before proceeding:
 
 ```bash
-# Option 1: go install (requires Go toolchain)
+# Option 1: one-liner (recommended — no Go toolchain needed)
+curl -sSL https://raw.githubusercontent.com/sglyon/deadcode/main/install.sh | sh
+
+# Option 2: go install (requires Go toolchain)
 go install github.com/sglyon/deadcode@latest
 
-# Option 2: download pre-built binary (no Go needed)
-# See https://github.com/sglyon/deadcode/releases/latest
-# Download the archive for the current OS/arch, extract, and
-# move the binary to a directory on $PATH:
-#   tar xzf deadcode_*.tar.gz && mv deadcode /usr/local/bin/
+# Custom install dir (no sudo)
+curl -sSL https://raw.githubusercontent.com/sglyon/deadcode/main/install.sh | INSTALL_DIR=$HOME/.local/bin sh
 ```
 
 After installing, run `deadcode doctor` to check adapter availability:
