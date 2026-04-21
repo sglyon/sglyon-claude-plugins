@@ -21,13 +21,13 @@ This is a Claude Code **plugin marketplace** repository. It hosts the `sgldev` p
 
 ### Agent Expertise System
 
-The central architectural feature. Agents maintain persistent mental model files (`.expertise/models/<agent>.yaml`) in consuming projects. The system works via hooks:
+The central architectural feature. Agents maintain persistent mental model files (`.expertise/models/<agent>.md`) in consuming projects. The system works via hooks:
 
-1. **SessionStart / SubagentStart** — `inject_expertise.py` / `load_expertise.py` inject expertise lifecycle instructions into agents
-2. **SubagentStop** — Prompt hook blocks subagents from stopping until they update their mental model
-3. **PostToolUse (Write|Edit)** — `validate_expertise.py` validates YAML syntax and line limits on model files
-4. **PreCompact** — `preserve_expertise.py` preserves expertise awareness across context compaction
-All hook scripts share a common library: `hooks/scripts/expertise.py`.
+1. **SessionStart / SubagentStart** — `load_expertise.py` / `inject_expertise.py` inject expertise lifecycle instructions into the main session and every spawned subagent
+2. **PostToolUse (Write|Edit)** — `validate_expertise.py` enforces line limit on `.md` model files and rejects stale `.yaml` writes
+All hook scripts share a common library: `hooks/scripts/expertise.py` (which also exposes `EXPERTISE_INSTRUCTIONS` — the authoritative writing rules).
+
+A previous design used `SubagentStop` (blocking) and `PreCompact` hooks; both were removed in v1.6.0. SubagentStop blocking caused subagents to truncate their reply in favor of writing to the file; `PreCompact` has no context-injection channel per the docs.
 
 ### Hook Scripts
 

@@ -1,64 +1,75 @@
 # Mental Model Schema Guide
 
-Suggested YAML top-level keys per agent role. These are recommendations, not enforced schema — agents evolve their own structure as needed.
+Mental model files are free-form markdown. These are suggested heading structures by agent role — adapt them to the specific repo. Agents evolve their own structure over time.
 
-## Review Agents (ash, elixir, liveview, python, typescript)
+**Reminder:** the model file captures *repo-specific facts the agent definition doesn't already know*. Don't restate the agent's role, heuristics, or analysis protocol — those are loaded fresh every session.
 
-```yaml
-patterns_discovered:
-  - date: "YYYY-MM-DD"
-    pattern: "Description of the pattern or gotcha"
-    severity: high|medium|low
-    files:
-      - path/to/relevant/file.ex
-    prevention: "How to avoid the issue"
+## Review agents (ash, elixir, liveview, python, typescript)
 
-architecture:
-  component_name:
-    pattern: "How this component is structured"
-    key_files:
-      - path/to/file.ex
-    observations:
-      - "Notable design decisions or conventions"
+```markdown
+# Mental Model — <agent-name>
 
-codebase_observations:
-  - date: "YYYY-MM-DD"
-    note: "Something worth remembering about how this codebase works"
+## Repo Facts
+- `lib/myapp/payments/charge.ex` is the canonical Stripe handler.
+- Resource statuses: `[:pending, :paid, :refunded, :voided]`.
+- Auth uses `Ash.Policy` everywhere except `lib/myapp/admin/` (custom check module).
 
-open_questions:
-  - "Unresolved questions for future sessions"
+## Gotchas
+- `User.create` action skips authorization on the test seed path. (2026-04-12)
+- `manage_relationship :on_lookup` silently no-ops if the lookup returns >1 row. (2026-04-15)
+
+## Open Questions
+- Why does the notification resource bypass the parent policy?
+
+## Recent Sessions
+- 2026-04-20 — reviewed payments PR, found CAS race in refunds.
+- 2026-04-15 — reviewed user management; flagged seed-path auth skip.
 ```
 
-### Field Descriptions
+## Team lead
 
-- **patterns_discovered**: Bugs, gotchas, or non-obvious behaviors found during reviews. Include severity so future sessions know what to prioritize.
-- **architecture**: How key components are structured. Focus on things that aren't obvious from reading the code — design decisions, conventions, deviations from framework defaults.
-- **codebase_observations**: General notes about the codebase — testing patterns, dependency choices, deployment considerations.
-- **open_questions**: Things you noticed but didn't resolve. Future sessions can investigate.
+```markdown
+# Mental Model — team-lead
 
-## Team Lead
+## Repo Facts
+- Test runner: `mix test --max-failures 1` is the project default.
+- CI gating job is `lint + dialyzer + test` in `.github/workflows/ci.yml`.
 
-```yaml
-project_patterns:
-  - pattern: "How work is typically structured in this project"
-    context: "Why this pattern exists"
+## Workflow Patterns
+- Splitting frontend vs backend reviews keeps reviewer agents focused; combined runs hit context limits on large PRs.
+- The compounder agent should run AFTER review, not in parallel — it depends on review findings.
 
-workflow_observations:
-  - date: "YYYY-MM-DD"
-    note: "What worked or didn't work in orchestration"
+## Open Questions
+- Does spawning learnings-researcher before the brainstorm help or distract?
 
-dependency_notes:
-  - area: "Feature or module name"
-    dependencies: ["list", "of", "dependencies"]
-    notes: "Sequencing considerations"
-
-open_questions:
-  - "Strategic questions for future planning"
+## Recent Sessions
+- 2026-04-20 — orchestrated payments PR review (3 agents, ~12 findings).
 ```
 
-### Field Descriptions
+## Researcher / explorer agents
 
-- **project_patterns**: Recurring patterns in how work gets done — chunking strategies, review pain points, areas that need special attention.
-- **workflow_observations**: What worked well or poorly in the implement-review-compound cycle.
-- **dependency_notes**: Which parts of the codebase depend on each other, affecting parallelization decisions.
-- **open_questions**: Strategic questions about the project direction or architecture.
+```markdown
+# Mental Model — repo-research-analyst
+
+## Repo Facts
+- Conventions doc lives at `docs/conventions/` (not `CONVENTIONS.md` at root).
+- Module naming: `MyApp.<Context>.<Resource>` for Ash, `MyAppWeb.<Page>Live` for LiveView.
+
+## Search Hints
+- `lib/myapp/jobs/` — Oban workers (named `*Worker`)
+- `priv/repo/migrations/` — migrations only; backfills live in `priv/repo/backfills/`
+
+## Open Questions
+- (none currently)
+```
+
+## Field guide
+
+| Heading | Use for |
+|---------|---------|
+| `Repo Facts` | Stable, factual statements about the codebase |
+| `Gotchas` | Things that surprised you; non-obvious behavior; bugs you hit |
+| `Open Questions` | Unresolved items for next session |
+| `Recent Sessions` | One-line log: date + what was touched. Keep last ~10. |
+| `Workflow Patterns` (lead-only) | Orchestration choices that worked or didn't |
+| `Search Hints` (researcher-only) | Where things live in this repo |

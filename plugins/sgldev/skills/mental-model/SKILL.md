@@ -5,56 +5,65 @@ description: "Defines the behavioral contract for reading, updating, and maintai
 
 # Mental Model Management
 
-You maintain a personal mental model file at `.expertise/models/<your-agent-name>.yaml` in the project directory. This file persists across sessions and contains patterns, observations, and learnings you've accumulated about this specific codebase.
+You maintain a personal mental model file at `.expertise/models/<your-agent-name>.md` in the project directory. This file persists across sessions and accumulates **repo-specific facts you could not have known without working in this codebase**.
 
 ## Lifecycle
 
-### At Task Start
-Read your mental model file before doing any work. This gives you context about:
-- Patterns you've previously discovered in this codebase
-- Architectural decisions and conventions you've observed
-- Open questions from prior sessions
+### At task start
+Read your mental model file. Use it as context — patterns previously discovered, conventions specific to this repo, open questions from prior sessions.
 
-### During Work
-As you work, note patterns worth remembering — things that would help you (or another session of you) do better next time.
+### Before drafting your final reply
+Update your mental model file with new findings from this session. Do this *before* composing your reply, not after.
 
-### After Completing Work
-Update your mental model file with new learnings. This is the most important step.
+### Then deliver your full reply
+The expertise file is a side effect; your reply to the lead is the primary output. Never truncate your reply to make room for the update — the lead agent depends on what you return.
 
-## Writing Guidelines
+## What to write (DO)
 
-1. **Update stale entries rather than just appending.** If your understanding of something has changed, update the existing entry. Don't let contradictory information accumulate.
+- Concrete file paths (`lib/arilearn/payments/charge.ex`)
+- Enum values, schema constants, magic strings used by this codebase
+- Non-obvious architectural facts (e.g., "this app uses Ash 3.x but resource X still uses 2.x DSL")
+- Bugs you hit and how the codebase actually behaves vs. how you expected it to behave
+- Conventions specific to this repo that contradict generic best practice
+- Open questions you couldn't resolve and where to look next time
 
-2. **Reference files by path, don't copy content.** Write `key_files: [lib/my_app/resources/order.ex]` not the full file contents.
+## What NOT to write (DON'T)
 
-3. **Don't store transient data.** Build output, test results, error logs — these don't belong. Store only your conclusions and observations.
+- **Your role, purpose, heuristics, or analysis protocol.** Those live in your agent definition and are loaded fresh every session. Repeating them in the model file wastes lines and adds no value.
+- **Generic best-practice prose** ("always validate inputs", "prefer composition over inheritance"). True everywhere; project-specific value: zero.
+- **The findings of the current task.** Those go in your reply to the lead. The mental model captures *durable* facts about the repo, not transient analysis.
+- **Build output, test logs, transcripts, or copy-pasted file contents.** Reference paths instead.
 
-4. **Structure emerges naturally.** Don't force categories that don't fit your domain. Start with what makes sense and evolve the structure over sessions.
+## Writing rules
 
-5. **Only update YOUR model file.** Never write to another agent's mental model. Each agent owns its own file.
+1. **Update stale entries; don't append.** If your understanding changes, edit the existing entry. Don't let contradictions accumulate.
+2. **Reference files by path.** Write `key_files: lib/myapp/orders.ex`, not the file contents.
+3. **Only update YOUR file.** Never write to another agent's mental model.
+4. **Use ISO dates.** `2026-04-21`.
 
-6. **Use ISO dates.** Record when patterns were discovered: `date: "2026-03-31"`.
+## Format
 
-7. **Include severity/importance.** Not all observations are equal. Mark what matters most.
+Free-form markdown. Suggested headings:
 
-## Line Limit
+```markdown
+## Repo Facts
+## Gotchas
+## Open Questions
+## Recent Sessions
+```
 
-Your mental model file has a configurable line limit (default: 5,000 lines, set in `.expertise/config.yaml`). A PostToolUse hook validates this after every write.
+`init-expertise.sh` creates a starter file with these headings. Adapt to your domain — structure emerges from use.
 
-If you're approaching the limit:
-- Remove entries that are no longer accurate
+## Line limit
+
+Configurable in `.expertise/config.yaml` (default: 5,000 lines). A PostToolUse hook fails the write when you exceed it. If you're approaching the limit:
+
+- Remove entries no longer accurate
 - Consolidate related observations
-- Drop low-value entries (trivial patterns, things that are obvious from the code)
-- Keep high-value entries (non-obvious patterns, gotchas, architectural decisions)
-
-## YAML Best Practices
-
-- Use spaces for indentation (never tabs)
-- Quote strings that contain special characters (`:`, `#`, `{`, `}`, `[`, `]`)
-- Use block scalars (`|` or `>`) for multi-line text
-- Keep top-level keys descriptive and consistent
+- Drop low-value entries (trivial patterns, things obvious from the code)
+- Keep high-value entries (gotchas, architectural decisions, footguns)
 
 ## Reference
 
-- See `references/schema-guide.md` for suggested YAML structures per agent role
-- See `references/examples.md` for concrete example mental models
+- `references/examples.md` — concrete example mental models
+- `references/schema-guide.md` — suggested heading structures per agent role

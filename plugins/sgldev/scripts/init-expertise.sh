@@ -66,15 +66,41 @@ else
   AGENTS=("${DEFAULT_AGENTS[@]}")
 fi
 
-# Create empty model files for each agent
+# Create starter model files for each agent
 for agent in "${AGENTS[@]}"; do
-  model_file="$MODELS_DIR/$agent.yaml"
+  model_file="$MODELS_DIR/$agent.md"
   if [ ! -f "$model_file" ]; then
-    echo "# Mental model for $agent — this file grows across sessions" > "$model_file"
-    echo "  Created: .expertise/models/$agent.yaml"
+    cat > "$model_file" << MD
+# Mental Model — $agent
+
+Repo-specific facts this agent has learned. **Do not** restate the agent's role,
+purpose, or generic heuristics — those live in the agent definition. Only record
+things you couldn't have known without working in this codebase.
+
+## Repo Facts
+
+<!-- File paths, enum values, schema constants, architectural facts. Example:
+- \`lib/myapp/payments/charge.ex\` is the canonical Stripe handler.
+- Order status enum: \`[:pending, :paid, :refunded, :voided]\`. -->
+
+## Gotchas
+
+<!-- Bugs you hit, conventions that contradict generic best practice, surprising
+behavior. Example:
+- The \`User.create\` action skips authorization on the test seed path. -->
+
+## Open Questions
+
+<!-- Unresolved items for next session. -->
+
+## Recent Sessions
+
+<!-- One line per session: date + what was touched. Update; don't accumulate. -->
+MD
+    echo "  Created: .expertise/models/$agent.md"
     created=$((created + 1))
   else
-    echo "  Exists:  .expertise/models/$agent.yaml"
+    echo "  Exists:  .expertise/models/$agent.md"
     existed=$((existed + 1))
   fi
 done

@@ -24,17 +24,6 @@
         ]
       }
     ],
-    "SubagentStop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "You are evaluating whether a subagent should be allowed to stop. Here is the hook input:\n\n$ARGUMENTS\n\nRules:\n1. If the agent_type is 'Explore', 'Plan', 'claude-code-guide', or any agent that only has read-only tools, ALWAYS allow it to stop. These agents cannot write files.\n2. If the last_assistant_message mentions updating .expertise/models/ or writing to a mental model file, allow the stop.\n3. If the agent performed meaningful work (code review, implementation, debugging, architectural analysis) but did NOT update its mental model file in .expertise/models/, block the stop.\n4. If no meaningful work was performed, allow the stop.\n\nRespond with ONLY valid JSON, no other text:\n- To allow: {\"decision\": \"allow\"}\n- To block: {\"decision\": \"block\", \"reason\": \"You performed meaningful work but did not update your mental model file in .expertise/models/<your-agent-name>.yaml. Please read your model file, update it with new patterns or observations from this session, then you may stop.\"}"
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
@@ -42,18 +31,6 @@
           {
             "type": "command",
             "command": "sh $CLAUDE_PLUGIN_ROOT/hooks/scripts/uvrun.sh $CLAUDE_PLUGIN_ROOT/hooks/scripts/validate_expertise.py",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "sh $CLAUDE_PLUGIN_ROOT/hooks/scripts/uvrun.sh $CLAUDE_PLUGIN_ROOT/hooks/scripts/preserve_expertise.py",
             "timeout": 10
           }
         ]

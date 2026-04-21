@@ -1,6 +1,6 @@
 ---
 name: expertise
-description: "Shows the status of the agent expertise system for the current project. Displays mental model file sizes, last-modified dates, and top-level keys. Use when asking about expertise status, agent knowledge state, or mental model overview."
+description: "Shows the status of the agent expertise system for the current project. Displays mental model file sizes, last-modified dates, and top-level headings. Use when asking about expertise status, agent knowledge state, or mental model overview."
 ---
 
 # Expertise Dashboard
@@ -15,14 +15,14 @@ Display the current state of the agent expertise system for this project.
    - Stop here.
 
 2. **Read `.expertise/config.yaml`** and display:
-   - Configured max_lines limit
+   - Configured `max_lines` limit
    - List of configured agents
 
-3. **For each model file** in `.expertise/models/`, display:
+3. **For each `*.md` file in `.expertise/models/`**, display:
    - Filename
    - Line count
-   - Whether it's empty (only has the initial comment) or has content
-   - Top-level YAML keys (first level only) to show what categories the agent is tracking
+   - Whether it's empty (only the starter scaffolding) or has real content
+   - Top-level markdown headings (`##` lines) to show what categories the agent is tracking
 
 4. **Check `docs/solutions/`** (managed by compound-engineering plugin). If it exists, count `.md` files per subdirectory and display a summary.
 
@@ -35,14 +35,14 @@ Config: max_lines=5000, 6 agents configured
 
 ### Mental Models
 
-| Agent | Lines | Status | Tracking |
+| Agent | Lines | Status | Sections |
 |-------|-------|--------|----------|
-| ash-reviewer | 142 | active | patterns_discovered, architecture, open_questions |
-| elixir-reviewer | 89 | active | patterns_discovered, codebase_observations |
-| liveview-reviewer | 0 | empty | — |
-| python-reviewer | 0 | empty | — |
-| typescript-reviewer | 0 | empty | — |
-| team-lead | 34 | active | project_patterns, workflow_observations |
+| ash-reviewer | 142 | active | Repo Facts, Gotchas, Open Questions, Recent Sessions |
+| elixir-reviewer | 89 | active | Repo Facts, Gotchas, Recent Sessions |
+| liveview-reviewer | 18 | empty | (starter only) |
+| python-reviewer | 18 | empty | (starter only) |
+| typescript-reviewer | 18 | empty | (starter only) |
+| team-lead | 34 | active | Workflow Patterns, Recent Sessions |
 
 ### Institutional Knowledge (docs/solutions/)
 

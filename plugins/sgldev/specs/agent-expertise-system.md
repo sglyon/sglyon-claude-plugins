@@ -39,7 +39,7 @@ Build a compounding knowledge system into the sgldev plugin that:
 
 | Store | Purpose | Format | Ownership | Audience |
 |-------|---------|--------|-----------|----------|
-| `.expertise/models/<agent>.yaml` | Per-agent working memory — architecture patterns, observations, open questions | Free-form YAML | Each agent owns its own file | The agent itself |
+| `.expertise/models/<agent>.md` | Per-agent working memory — repo-specific facts, gotchas, open questions | Free-form markdown | Each agent owns its own file | The agent itself |
 | `docs/solutions/<category>/<slug>.md` | Institutional knowledge — solved problems, best practices | Structured markdown + YAML frontmatter | Created by `/compound` skill | All agents and humans |
 
 ### New Plugin Components
@@ -91,59 +91,52 @@ sgldev/
 
 ### 5.1 Per-Agent Mental Models
 
-**Location:** `.expertise/models/<agent-name>.yaml` in the project directory (not the plugin — these are per-project, per-agent).
+**Location:** `.expertise/models/<agent-name>.md` in the project directory (not the plugin — these are per-project, per-agent).
 
-**Initialization:** The `init-expertise.sh` script creates the directory structure and empty YAML files:
+**Initialization:** The `init-expertise.sh` script creates the directory structure and starter markdown files:
 
 ```
 .expertise/
 ├── models/
-│   ├── ash-reviewer.yaml
-│   ├── elixir-reviewer.yaml
-│   ├── liveview-reviewer.yaml
-│   ├── python-reviewer.yaml
-│   ├── typescript-reviewer.yaml
-│   └── team-lead.yaml
-└── config.yaml                  # max-lines, enabled agents, components
+│   ├── ash-reviewer.md
+│   ├── elixir-reviewer.md
+│   ├── liveview-reviewer.md
+│   ├── python-reviewer.md
+│   ├── typescript-reviewer.md
+│   └── team-lead.md
+└── config.yaml                  # max_lines, enabled agents, components
 ```
 
-**Schema:** Free-form YAML. No enforced schema — agents evolve their own structure. The `mental-model` skill provides guidance and examples but doesn't mandate categories. Suggested top-level keys:
+**Schema:** Free-form markdown. No enforced schema — agents evolve their own structure. The `mental-model` skill provides guidance and examples but doesn't mandate categories. Suggested top-level headings: `## Repo Facts`, `## Gotchas`, `## Open Questions`, `## Recent Sessions`. Example:
 
-```yaml
-# Example: ash-reviewer mental model after a few sessions
-patterns_discovered:
-  - date: "2026-03-31"
-    pattern: "Ash.Changeset.manage_relationship with on_lookup: :relate has a silent failure mode when the lookup returns multiple results"
-    severity: high
-    files:
-      - lib/my_app/resources/order.ex
-    prevention: "Always add unique constraint on lookup fields"
+```markdown
+# Mental Model — ash-reviewer
 
-architecture:
-  auth_layer:
-    pattern: "Policy-based with actor checks via Ash.Policy"
-    key_files:
-      - lib/my_app/resources/user.ex
-    observations:
-      - "Several resources missing negative authorization tests"
+## Repo Facts
+- Ash 3.x throughout; `lib/myapp/legacy/order.ex` still uses 2.x DSL.
+- Auth: `Ash.Policy` everywhere except `lib/myapp/admin/*` (custom check module).
 
-codebase_observations:
-  - date: "2026-03-31"
-    note: "The payments module uses a custom CAS pattern instead of Ash's built-in optimistic locking"
+## Gotchas
+- `manage_relationship :on_lookup` silently no-ops when lookup returns >1 row. Add unique constraint. (2026-04-15)
 
-open_questions:
-  - "Should the notification resource use a separate policy or inherit from parent?"
+## Open Questions
+- Is the custom CAS in `payments/cas.ex` intentional or pre-Ash holdover?
+
+## Recent Sessions
+- 2026-04-20 — payments PR; flagged refund CAS race.
 ```
 
-**Line Limit:** Configurable in `.expertise/config.yaml`, default 5,000 lines per agent. (Smaller than lead-agents' 10,000 because Claude Code agents are more focused — they don't need to track team dynamics.)
+**Critical writing rule:** the model file captures **repo-specific facts the agent could not have known without working in this codebase**. It must NOT restate the agent's role, heuristics, or analysis protocol — those live in the agent definition and are loaded fresh every session.
+
+**Line Limit:** Configurable in `.expertise/config.yaml`, default 5,000 lines per agent.
 
 **Lifecycle:**
-1. **SessionStart hook** → injects a system message telling Claude that `.expertise/` exists and which agents have mental models
-2. **Agent system prompt** → instructs agent to read its model file at task start
-3. **Agent does work** → discovers patterns, makes observations
-4. **Agent system prompt** → instructs agent to update its model file with learnings
-5. **PostToolUse hook** → validates YAML syntax and checks line limit after any write to `.expertise/models/`
-6. **Stop hook** → prompt-based reminder: "Have you updated your expertise file with any learnings from this session?"
+1. **SessionStart hook** → injects a system message telling Claude that `.expertise/` exists and which agents have mental models, plus the writing instructions
+2. **SubagentStart hook** → injects the same context into spawned subagents
+3. **Subagent reads** its model file at task start
+4. **Subagent does work** → discovers facts, observations
+5. **Subagent updates** its model file *before* drafting its final reply (not after)
+6. **PostToolUse hook** → enforces line limit and rejects stale `.yaml` writes after any write to `.expertise/models/`
 
 ### 5.2 Mental Model Skill
 
@@ -263,72 +256,60 @@ Knowledge track body sections: Context, Guidance, Why This Matters, When to Appl
 
 #### SessionStart Hook (Command)
 
-**Script:** `hooks/scripts/load-expertise.sh`
+**Script:** `hooks/scripts/load_expertise.py`
 
 **What it does:**
 1. Checks if `.expertise/` directory exists in current project
-2. If yes, reads `.expertise/config.yaml` for enabled agents and settings
-3. Lists all mental model files and their last-modified dates
-4. Checks if `docs/solutions/` exists and how many solution docs it contains
-5. Outputs a system message summarizing what expertise is available
+2. Lists all mental model `.md` files with line counts
+3. Checks if `docs/solutions/` exists and how many solution docs it contains
+4. Outputs a system message summarizing what expertise is available, plus the writing instructions
 
 **Output example:**
 ```
 Agent expertise system is active for this project.
 
 Mental models available:
-- ash-reviewer.yaml (last updated: 2026-03-28, 142 lines)
-- elixir-reviewer.yaml (last updated: 2026-03-30, 89 lines)
-- python-reviewer.yaml (empty)
+  - ash-reviewer.md (142 lines)
+  - elixir-reviewer.md (89 lines)
+  - python-reviewer.md (empty)
 
-Institutional knowledge: docs/solutions/ contains 23 documented solutions across 8 categories.
+Institutional knowledge: docs/solutions/ contains 23 documented solutions.
 
-Agents should read their mental model file at the start of tasks and update it with learnings.
+[plus the EXPERTISE_INSTRUCTIONS block from expertise.py]
 ```
+
+#### SubagentStart Hook (Command)
+
+**Script:** `hooks/scripts/inject_expertise.py`
+
+**What it does:** same content as SessionStart, but emits via `hookSpecificOutput.additionalContext` so the spawned subagent has the context.
 
 #### PostToolUse Hook (Command)
 
 **Matcher:** `Write|Edit`
 
-**Script:** `hooks/scripts/validate-expertise.sh`
+**Script:** `hooks/scripts/validate_expertise.py`
 
 **What it does:**
 1. Checks if the written/edited file is inside `.expertise/models/`
-2. If not, exits silently (exit 0)
-3. If yes:
-   a. Validates YAML syntax (`python3 -c "import yaml; yaml.safe_load(open('$FILE'))"`)
-   b. Counts lines
-   c. Reads max-lines from `.expertise/config.yaml`
-   d. If over limit, outputs warning via stderr (exit 2) telling Claude to trim
-   e. If YAML invalid, outputs error via stderr (exit 2) telling Claude to fix
+2. If the file extension is `.yaml`, exits 2 with a message telling Claude to use `.md` (legacy migration nudge)
+3. If `.md`: counts lines and reads `max_lines` from `.expertise/config.yaml`. If over limit, exits 2 with stderr asking Claude to trim
+4. Otherwise exits 0
 
-#### Stop Hook (Prompt-Based)
+Note: PostToolUse cannot block the write (the file already exists when the hook fires). Exit 2 surfaces stderr to Claude so it can correct on the next turn.
 
-**Matcher:** `*`
+#### No SubagentStop or PreCompact hooks
 
-**Prompt:**
-```
-Review the current session. Always return 'approve' to allow stopping.
+Earlier versions of this plugin used a `SubagentStop` prompt hook to block subagents from stopping until they updated their model file, and a `PreCompact` hook to inject context before compaction.
 
-If any agent performed meaningful work (code review, implementation, debugging, architectural analysis) and the relevant mental model file in .expertise/models/ was NOT updated with learnings, include a systemMessage noting which agent's expertise file could benefit from an update and what was learned. This is a nudge, not a block.
+Both were removed in v1.6.0:
 
-If no meaningful work was performed, or expertise was already updated, approve silently.
-```
+- **SubagentStop blocking** caused subagents to truncate their final reply in favor of writing to the expertise file, leaving the lead agent with no useful return value. The behavior is now expressed as instruction in `SubagentStart` context: *update before drafting your reply, then deliver the full reply*.
+- **PreCompact has no context-injection channel** per the [hooks docs](https://code.claude.com/docs/en/hooks) — only `decision: "block"`. The previous `preserve_expertise.py` script printed text to stdout that was silently discarded.
 
 ### 5.8 Agent System Prompt Updates
 
-Each existing review agent gets a small addition to its system prompt referencing its mental model file. Example addition for sglyon-ash-reviewer:
-
-```markdown
-## Persistent Expertise
-
-You maintain a personal mental model file at `.expertise/models/ash-reviewer.yaml` in the project directory. This file persists across sessions and contains patterns, observations, and learnings you've accumulated about this specific codebase.
-
-**At task start:** Read your mental model file for context before doing any work.
-**After completing work:** Update your mental model file with any new patterns discovered, architectural observations, or open questions. Update stale entries rather than just appending.
-
-If the file doesn't exist or is empty, that's fine — you'll build it up over time.
-```
+Agent system prompts do **not** need explicit expertise references — the SessionStart and SubagentStart hooks inject the full instructions into every agent's context. This keeps the per-agent definitions focused on domain expertise and avoids duplicating the lifecycle instructions in five places.
 
 ### ~~5.9 Conversation Log~~ (Removed)
 
@@ -342,11 +323,10 @@ If the file doesn't exist or is empty, that's fine — you'll build it up over t
 
 **What it does:**
 1. Creates `.expertise/` directory structure
-2. Creates empty YAML files for each configured agent
+2. Creates starter `.md` files for each configured agent (with `## Repo Facts`, `## Gotchas`, `## Open Questions`, `## Recent Sessions` headings and DO/DON'T scaffolding)
 3. Creates `config.yaml` with defaults
-4. Creates `docs/solutions/` directory if it doesn't exist
-5. Both `.expertise/` and `docs/solutions/` are git-tracked (committed to the repo)
-6. Adds a line to project's CLAUDE.md about the expertise system if not already present
+4. Both `.expertise/` and `docs/solutions/` are git-tracked (committed to the repo)
+5. Suggests adding a line to project's CLAUDE.md about the expertise system if not already present
 
 **Config defaults (`.expertise/config.yaml`):**
 ```yaml
@@ -493,7 +473,7 @@ solutions:
 
 1. **Mental models are git-tracked.** Both `.expertise/` and `docs/solutions/` are committed to the repo. Mental models are part of the codebase and how it is operated — they should ship with the project.
 
-2. **Stop hook is non-blocking.** The prompt-based Stop hook always returns "approve" but includes a `systemMessage` nudging Claude to update expertise if meaningful work was done. No additional blocks beyond PostToolUse validation (bad YAML / over line limit).
+2. **No SubagentStop blocking.** Earlier versions blocked subagents from stopping until they updated their model file. In practice this caused subagents to truncate their actual reply in favor of writing to the file, leaving the lead with no useful return value. Now expressed as instruction in `SubagentStart` context: *update before drafting your reply*. PostToolUse still enforces line limit.
 
 3. **No conversation log.** Separation of concerns — agents stay focused on their domain. Cross-session context comes from mental models (per-agent) and `docs/solutions/` (shared institutional knowledge). No shared conversation channel.
 

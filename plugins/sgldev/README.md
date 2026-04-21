@@ -1,6 +1,6 @@
 # sgldev
 
-Spencer Lyon's personal development tools for Claude Code. Includes 7 agents, 11 skills, and 5 hooks that power a persistent per-agent expertise system.
+Spencer Lyon's personal development tools for Claude Code. Includes 7 agents, 11 skills, and 3 hooks that power a persistent per-agent expertise system.
 
 ## Agents
 
@@ -34,13 +34,19 @@ Spencer Lyon's personal development tools for Claude Code. Includes 7 agents, 11
 
 | Event | Type | Description |
 |-------|------|-------------|
-| `SessionStart` | command | Load expertise summary into main session context |
-| `SubagentStart` | command | Inject expertise instructions into subagent via additionalContext |
-| `SubagentStop` | prompt | Block subagents from stopping until they update their mental model (read-only agents exempted) |
-| `PostToolUse` (Write/Edit) | command | Validate YAML syntax and line limits on .expertise/models/ files |
-| `PreCompact` | command | Preserve expertise awareness across context compaction |
+| `SessionStart` | command | Load expertise summary + writing instructions into main session context |
+| `SubagentStart` | command | Inject expertise instructions into subagent via `additionalContext` |
+| `PostToolUse` (Write/Edit) | command | Enforce line limit on `.expertise/models/*.md`; reject stale `.yaml` writes |
 
 ## Changelog
+
+### v1.6.0
+
+- **Switch mental models from `.yaml` to `.md`.** Agents naturally wrote markdown anyway; YAML structure was rarely used and the parser was brittle. Validator now only enforces line limit.
+- **Remove `SubagentStop` blocking hook.** It caused subagents to truncate their final reply in favor of updating the expertise file, forcing the lead to read the file to recover what was lost. Replaced with stronger ordering instruction in `SubagentStart` context: update *before* drafting your reply.
+- **Remove `PreCompact` hook.** Per the [hooks docs](https://code.claude.com/docs/en/hooks), `PreCompact` has no context-injection channel — only `decision: "block"`. The `preserve_expertise.py` script's stdout was silently discarded.
+- **Sharpen expertise instructions.** Explicit DO/DON'T guidance: write only repo-specific facts, not the agent's own role/heuristics/protocol (those live in the agent definition and are loaded fresh every session).
+- **Update `init-expertise.sh`** to create `.md` files with starter scaffolding that encodes the writing rules.
 
 ### v1.5.0
 

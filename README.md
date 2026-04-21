@@ -39,16 +39,14 @@ Personal development tools with persistent per-agent expertise.
 - `jscpd` — Copy/paste duplication detection across 150+ languages
 - `arete-intelligence-sow` — Areté Intelligence branded Statement of Work generator
 
-**Hooks** (5):
-- **SessionStart** — Loads expertise system awareness when `.expertise/` exists in a project
-- **SubagentStart** — Injects expertise instructions into every spawned subagent via `additionalContext`
-- **SubagentStop** — Blocks subagents from stopping until they've updated their mental model (if meaningful work was done)
-- **PostToolUse** (Write|Edit) — Validates YAML syntax and line limits for mental model files
-- **PreCompact** — Preserves expertise awareness across context compaction
+**Hooks** (3):
+- **SessionStart** — Loads expertise system awareness + writing instructions when `.expertise/` exists in a project
+- **SubagentStart** — Injects the same instructions into every spawned subagent via `additionalContext`
+- **PostToolUse** (Write|Edit) — Enforces line limit on `.expertise/models/*.md` and rejects stale `.yaml` writes
 
 ### Agent Expertise System
 
-Each agent maintains a personal mental model file (`.expertise/models/<agent>.yaml`) that persists across sessions. Agents accumulate codebase-specific patterns, architectural observations, and learnings over time.
+Each agent maintains a personal mental model file (`.expertise/models/<agent>.md`) that persists across sessions. Agents accumulate **repo-specific facts** (file paths, enum values, gotchas, architectural facts) — not generic heuristics.
 
 Designed to complement the [compound-engineering](https://github.com/EveryInc/compound-engineering-plugin) plugin — sgldev owns per-agent expertise while compound-engineering owns institutional knowledge (`docs/solutions/`).
 

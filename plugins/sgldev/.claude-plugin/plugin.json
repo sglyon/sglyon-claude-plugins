@@ -1,7 +1,7 @@
 {
   "name": "sgldev",
-  "version": "1.5.0",
-  "description": "Spencer Lyon's personal development tools. Includes 7 agents (5 code reviewers + 1 code health auditor + 1 plugin releaser), 11 skills, and 5 hooks that power a persistent per-agent expertise system — agents accumulate codebase-specific knowledge in .expertise/models/ across sessions via SessionStart, SubagentStart, SubagentStop, PostToolUse, and PreCompact hooks.",
+  "version": "1.6.0",
+  "description": "Spencer Lyon's personal development tools. Includes 7 agents (5 code reviewers + 1 code health auditor + 1 plugin releaser), 11 skills, and 3 hooks that power a persistent per-agent expertise system — agents accumulate codebase-specific knowledge in .expertise/models/<agent>.md across sessions via SessionStart, SubagentStart, and PostToolUse hooks.",
   "author": {
     "name": "Spencer Lyon",
     "url": "https://github.com/sglyon"
