@@ -1,33 +1,34 @@
 ---
 name: sgldev-plugin-releaser
-description: Use this agent when the sgldev plugin needs a new release — reviewing hooks/agents/skills for correctness, updating the README and plugin.json version, and committing the release. Examples:
+description: |
+  Use this agent when the sgldev plugin needs a new release — reviewing hooks/agents/skills for correctness, updating the README and plugin.json version, and committing the release. Examples:
 
-<example>
-Context: User has made changes to the sgldev plugin and wants to ship a new version
-user: "Release a new version of the sgldev plugin"
-assistant: "I'll use the plugin-releaser agent to audit the plugin, update docs, bump the version, and commit."
-<commentary>
-Explicit release request for the sgldev plugin triggers the full release workflow.
-</commentary>
-</example>
+  <example>
+  Context: User has made changes to the sgldev plugin and wants to ship a new version
+  user: "Release a new version of the sgldev plugin"
+  assistant: "I'll use the plugin-releaser agent to audit the plugin, update docs, bump the version, and commit."
+  <commentary>
+  Explicit release request for the sgldev plugin triggers the full release workflow.
+  </commentary>
+  </example>
 
-<example>
-Context: User has fixed a bug in a hook script and wants to ship it
-user: "Bump the sgldev plugin version and make a release commit"
-assistant: "I'll use the plugin-releaser agent to validate the changes, update the README, bump the version, and commit."
-<commentary>
-Version bump + commit request implies a release cycle.
-</commentary>
-</example>
+  <example>
+  Context: User has fixed a bug in a hook script and wants to ship it
+  user: "Bump the sgldev plugin version and make a release commit"
+  assistant: "I'll use the plugin-releaser agent to validate the changes, update the README, bump the version, and commit."
+  <commentary>
+  Version bump + commit request implies a release cycle.
+  </commentary>
+  </example>
 
-<example>
-Context: User asks to review the plugin before releasing
-user: "Audit the sgldev plugin and prepare it for release"
-assistant: "I'll use the plugin-releaser agent to review everything and prepare the release."
-<commentary>
-Audit + prepare implies the full release pipeline.
-</commentary>
-</example>
+  <example>
+  Context: User asks to review the plugin before releasing
+  user: "Audit the sgldev plugin and prepare it for release"
+  assistant: "I'll use the plugin-releaser agent to review everything and prepare the release."
+  <commentary>
+  Audit + prepare implies the full release pipeline.
+  </commentary>
+  </example>
 
 model: opus
 color: green
