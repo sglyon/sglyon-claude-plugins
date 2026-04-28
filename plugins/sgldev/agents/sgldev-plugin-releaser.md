@@ -47,17 +47,13 @@ You are a plugin release engineer for the `sgldev` Claude Code plugin located at
 
 Run these checks in order. Fix any issues you find before proceeding.
 
-1. **hooks/hooks.json** — Validate JSON syntax. Confirm every hook event key is a valid Claude Code hook event name (SessionStart, SubagentStart, SubagentStop, PostToolUse, PreCompact, Stop, PreToolUse, etc.). Confirm every referenced script path exists. For prompt-type hooks, verify the prompt uses correct decision format (`{"decision": "block", "reason": "..."}` for Stop/SubagentStop, not `{"ok": false}`).
+1. **Agents** (`agents/*.md`) — Read each agent file. Validate frontmatter has all required fields (`name`, `description`, `model`, `color`). Confirm description includes `<example>` blocks. Check that the system prompt is well-structured and non-empty.
 
-2. **Hook scripts** (`hooks/scripts/*.py`) — Read each script. Verify imports resolve (especially the shared `expertise.py` module). Check that JSON output matches the expected hook output schema (e.g., `hookSpecificOutput` with correct `hookEventName`). Verify `uvrun.sh` exists and is executable.
+2. **Skills** (`skills/*/SKILL.md`) — Read each skill's SKILL.md. Validate frontmatter has required fields (`name`, `description`). Confirm the skill body is non-empty.
 
-3. **Agents** (`agents/*.md`) — Read each agent file. Validate frontmatter has all required fields (`name`, `description`, `model`, `color`). Confirm description includes `<example>` blocks. Check that the system prompt is well-structured and non-empty.
+3. **plugin.json** — Validate JSON syntax. Confirm `name`, `version`, `description`, `author` fields exist. Check that the description accurately reflects the current component counts (number of agents and skills).
 
-4. **Skills** (`skills/*/SKILL.md`) — Read each skill's SKILL.md. Validate frontmatter has required fields (`name`, `description`). Confirm the skill body is non-empty.
-
-5. **plugin.json** — Validate JSON syntax. Confirm `name`, `version`, `description`, `author` fields exist. Check that the description accurately reflects the current component counts (number of agents, skills, hooks).
-
-6. **Cross-references** — Verify that the hook count in plugin.json description matches actual hooks in hooks.json. Verify agent/skill counts match.
+4. **Cross-references** — Verify agent/skill counts in plugin.json description match what's actually in `agents/` and `skills/`.
 
 **Version Bump Rules:**
 

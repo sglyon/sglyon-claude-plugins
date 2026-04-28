@@ -1,6 +1,6 @@
 # sgldev
 
-Spencer Lyon's personal development tools for Claude Code. Includes 7 agents, 11 skills, and 3 hooks that power a persistent per-agent expertise system.
+Spencer Lyon's personal development tools for Claude Code. Includes 7 agents and 9 skills.
 
 ## Agents
 
@@ -23,22 +23,16 @@ Spencer Lyon's personal development tools for Claude Code. Includes 7 agents, 11
 | `rodney` | Browser automation using the rodney CLI for Chrome |
 | `create-agent-skills` | Guidance for creating and refining Claude Code Skills |
 | `team-lead` | Multi-agent engineering workflow coordinator |
-| `mental-model` | Behavioral contract for per-agent mental model files |
-| `expertise` | Show status of the agent expertise system |
 | `conversational-response` | Concise response style for multi-agent workflows |
 | `jscpd` | Detect duplicated code across 150+ languages |
 | `deadcode` | Find dead/unused code across Python, JS/TS, Elixir, Go |
 | `arete-intelligence-sow` | Generate Arete Intelligence-branded SOW documents |
 
-## Hooks
-
-| Event | Type | Description |
-|-------|------|-------------|
-| `SessionStart` | command | Load expertise summary + writing instructions into main session context |
-| `SubagentStart` | command | Inject expertise instructions into subagent via `additionalContext` |
-| `PostToolUse` (Write/Edit) | command | Enforce line limit on `.expertise/models/*.md`; reject stale `.yaml` writes |
-
 ## Changelog
+
+### v2.0.0
+
+- **Remove the per-agent expertise system.** Deleted all 3 hooks (SessionStart, SubagentStart, PostToolUse), all hook scripts, the `expertise` and `mental-model` skills, the `init-expertise.sh` setup script, and the spec. The system added complexity without delivering enough value to justify it. Projects that previously relied on `.expertise/models/<agent>.md` files can keep them as plain repo notes — nothing reads them anymore.
 
 ### v1.6.0
 

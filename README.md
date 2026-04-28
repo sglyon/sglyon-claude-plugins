@@ -16,80 +16,24 @@ Spencer Lyon's Claude Code plugin marketplace.
 
 ### sgldev
 
-Personal development tools with persistent per-agent expertise.
+Personal development tools.
 
-**Agents** (6):
+**Agents** (7):
 - `sglyon-ash-reviewer` — Ash Framework code review
 - `sglyon-elixir-reviewer` — Elixir code review
 - `sglyon-liveview-reviewer` — Phoenix LiveView code review
 - `sglyon-python-reviewer` — Python code review
 - `sglyon-typescript-reviewer` — TypeScript code review
 - `sglyon-code-health-auditor` — Dead code + duplication audit (uses `deadcode` and `jscpd`)
+- `sgldev-plugin-releaser` — Release automation for the sgldev plugin
 
-**Skills** (11):
+**Skills** (9):
 - `chartroom` — Chart generation
 - `showboat` — Demo document creation
 - `team-lead` — Team lead workflows
 - `rodney` — Browser automation via Chrome CDP
 - `create-agent-skills` — Skill authoring toolkit
-- `mental-model` — Per-agent expertise lifecycle management
-- `expertise` — Dashboard showing agent knowledge state
 - `conversational-response` — Concise response style for multi-agent workflows
 - `deadcode` — Multi-language dead-code detection (Python, JS/TS, Elixir, Go)
 - `jscpd` — Copy/paste duplication detection across 150+ languages
 - `arete-intelligence-sow` — Areté Intelligence branded Statement of Work generator
-
-**Hooks** (3):
-- **SessionStart** — Loads expertise system awareness + writing instructions when `.expertise/` exists in a project
-- **SubagentStart** — Injects the same instructions into every spawned subagent via `additionalContext`
-- **PostToolUse** (Write|Edit) — Enforces line limit on `.expertise/models/*.md` and rejects stale `.yaml` writes
-
-### Agent Expertise System
-
-Each agent maintains a personal mental model file (`.expertise/models/<agent>.md`) that persists across sessions. Agents accumulate **repo-specific facts** (file paths, enum values, gotchas, architectural facts) — not generic heuristics.
-
-Designed to complement the [compound-engineering](https://github.com/EveryInc/compound-engineering-plugin) plugin — sgldev owns per-agent expertise while compound-engineering owns institutional knowledge (`docs/solutions/`).
-
-**Requirements:** [uv](https://docs.astral.sh/uv/) (hook scripts use PEP 723 inline metadata to manage dependencies automatically via `uv run`)
-
-**Setup in a project:**
-
-```bash
-bash $CLAUDE_PLUGIN_ROOT/scripts/init-expertise.sh
-```
-
-This creates `.expertise/` with empty model files for each agent. Models are git-tracked and grow as agents work on the project.
-
-#### How It Works
-
-The expertise system delivers instructions automatically via hooks — no manual setup in agent files needed:
-
-- **SessionStart hook** — Fires when a Claude Code session begins. Injects expertise lifecycle instructions into the main session agent.
-- **SubagentStart hook** — Fires when any subagent is spawned (e.g., team-lead spawning a reviewer). Injects the same expertise instructions into the subagent's context.
-
-Both hooks run the same script, so every agent — plugin-provided or project-defined, main session or subagent — gets the full instructions automatically.
-
-#### Using Expertise with Custom Project Agents
-
-Any project can define its own agents in `.claude/agents/` and have them participate in the expertise system. No changes to the agent's `.md` file are needed — the SubagentStart hook handles instruction injection automatically.
-
-1. **Add your agent to `.expertise/config.yaml`:**
-
-```yaml
-agents:
-  - ash-reviewer
-  - elixir-reviewer
-  - liveview-reviewer
-  - python-reviewer
-  - typescript-reviewer
-  - team-lead
-  - my-custom-agent    # your agent
-```
-
-2. **Run the init script** to create the model file:
-
-```bash
-bash $CLAUDE_PLUGIN_ROOT/scripts/init-expertise.sh
-```
-
-That's it. The hooks handle the rest.

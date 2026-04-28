@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a Claude Code **plugin marketplace** repository. It hosts the `sgldev` plugin under `plugins/sgldev/`, which provides specialized code review agents, skills, and a persistent agent expertise system powered by hooks.
+This is a Claude Code **plugin marketplace** repository. It hosts the `sgldev` plugin under `plugins/sgldev/`, which provides specialized code review agents and skills.
 
 ## Repository Structure
 
@@ -12,30 +12,13 @@ This is a Claude Code **plugin marketplace** repository. It hosts the `sgldev` p
 - `plugins/sgldev/.claude-plugin/plugin.json` — Plugin manifest (name, version, description)
 - `plugins/sgldev/agents/` — Agent definitions (Markdown files with YAML frontmatter)
 - `plugins/sgldev/skills/` — Skills (each in its own directory with a `SKILL.md`)
-- `plugins/sgldev/hooks/hooks.json` — Hook definitions for all 6 lifecycle hooks
-- `plugins/sgldev/hooks/scripts/` — Python scripts invoked by hooks (use PEP 723 inline metadata, run via `uv run`)
-- `plugins/sgldev/scripts/` — Setup scripts (e.g., `init-expertise.sh`)
-- `plugins/sgldev/specs/` — Design specs (e.g., agent expertise system spec)
-
-## Key Concepts
-
-### Agent Expertise System
-
-The central architectural feature. Agents maintain persistent mental model files (`.expertise/models/<agent>.md`) in consuming projects. The system works via hooks:
-
-1. **SessionStart / SubagentStart** — `load_expertise.py` / `inject_expertise.py` inject expertise lifecycle instructions into the main session and every spawned subagent
-2. **PostToolUse (Write|Edit)** — `validate_expertise.py` enforces line limit on `.md` model files and rejects stale `.yaml` writes
-All hook scripts share a common library: `hooks/scripts/expertise.py` (which also exposes `EXPERTISE_INSTRUCTIONS` — the authoritative writing rules).
-
-A previous design used `SubagentStop` (blocking) and `PreCompact` hooks; both were removed in v1.6.0. SubagentStop blocking caused subagents to truncate their reply in favor of writing to the file; `PreCompact` has no context-injection channel per the docs.
-
-### Hook Scripts
-
-Hook scripts are Python, executed via `uvrun.sh` which wraps `uv run`. Dependencies are declared inline per PEP 723. **Requires `uv` to be installed.**
 
 ## Development Notes
 
 - When bumping the plugin version, update `plugins/sgldev/.claude-plugin/plugin.json` (the `marketplace.json` version is separate and tracks the marketplace itself)
 - Skills use a `SKILL.md` file with YAML frontmatter for metadata and Markdown body for the skill prompt
 - Agents are single `.md` files with YAML frontmatter defining `subagent_type`, tools, model, and behavioral description
-- Hook scripts output JSON to stdout — the hook system parses this output to determine actions (e.g., `additionalContext` injection, validation pass/fail)
+
+## History
+
+A previous design (v1.x) included a per-agent expertise system: hooks (SessionStart, SubagentStart, PostToolUse) injected lifecycle instructions and validated `.expertise/models/<agent>.md` files where agents accumulated repo-specific knowledge across sessions. The system was removed in v2.0.0 — it added complexity without delivering enough value to justify it.
